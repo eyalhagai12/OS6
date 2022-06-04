@@ -11,7 +11,7 @@ singleton: Singleton.o
 	clang++-9 -o $@ $^ -lpthread
 
 reactor: Reactor.o
-	clang++-9 -o $@ $^ -lpthread
+	g++ -o reactor $^ -lpthread
 
 client: client.o
 	clang++-9 -o $@ $^ -lpthread

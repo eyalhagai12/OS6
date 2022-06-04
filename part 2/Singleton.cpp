@@ -6,7 +6,9 @@ template <typename T>
 class Singleton
 {
 protected:
-    Singleton(T *value) : value_(value) {}
+    Singleton(T *value)   {
+        value_ = new T();
+    }
 
     static Singleton *singleton_;
 
