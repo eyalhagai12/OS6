@@ -231,7 +231,7 @@ int main(void)
 
     // Start off with room for 5 connections
     // (We'll realloc as necessary)
-    Reactor *reactor = Singleton<Reactor>::Instance()->get_data();
+    Reactor *reactor = Singleton<Reactor>::Instance(new Reactor())->get_data();
 
     // Set up and get a listening socket
     listener = get_listener_socket();
