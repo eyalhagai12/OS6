@@ -16,7 +16,29 @@
 
 #define PORT "3490" // the port client will be connecting to
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once
+#define MAXDATASIZE 1024 // max number of bytes we can get at once
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h> //Header file for sleep(). man 3 sleep for details.
+#include <pthread.h>
+
+// A normal C function that is executed as a thread
+// when its name is specified in pthread_create()
+void *myThreadFun(void *vargp)
+{
+    int sockfd = *(int*)vargp;
+    int  numbytes;
+    char buf[MAXDATASIZE];
+    
+	while((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) != -1)
+    {
+        printf("%s",buf);
+        fflush(stdout);
+        bzero(buf,MAXDATASIZE);
+    }
+    return NULL;
+}
+
 
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)
@@ -32,7 +54,7 @@ void *get_in_addr(struct sockaddr *sa)
 int main(int argc, char *argv[])
 {
     int sockfd, numbytes;
-    char buf[MAXDATASIZE];
+    
     struct addrinfo hints, *servinfo, *p;
     int rv;
     char s[INET6_ADDRSTRLEN];
@@ -84,21 +106,27 @@ int main(int argc, char *argv[])
     printf("client: connecting to %s\n", s);
 
     freeaddrinfo(servinfo); // all done with this structure
-
-    if (send(sockfd, "hi from client", 15, 0) == -1)
+   // sleep(10);
+pthread_t thread_id;
+	pthread_create(&thread_id, NULL, myThreadFun, (void *)&sockfd);
+	// char buf[MAXDATASIZE];  
+   while (1)
+   {
+    char *buf=NULL;   
+    size_t len = 0;
+    puts("enter a message to send");
+    getline(&buf, &len, stdin);
+    if (send(sockfd, buf, strlen(buf)+1, 0) == -1)
     {
         perror("send");
     }
-    if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1)
-    {
-        perror("recv");
-        exit(1);
-    }
+    //printf("message want sent\n");
+    free(buf);
+   }
 
-    buf[numbytes] = '\0';
-
-    printf("client: received '%s'\n", buf);
-
+   
+    pthread_join(thread_id, NULL);
+    
     close(sockfd);
 
     return 0;

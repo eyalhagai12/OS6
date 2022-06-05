@@ -27,7 +27,7 @@ public:
     ~Reactor();
 };
 
-Reactor::Reactor(/* args */)
+Reactor::Reactor(/* args */) : fds()
 {
 }
 
@@ -183,6 +183,14 @@ void handle_client(int fd)
                     perror("send");
                 }
             }
+            else if (dest_fd == sender_fd)
+            {
+                if (send(dest_fd, "message was delivered\n", 23, 0) == -1)
+                {
+                    perror("send");
+                }
+            }
+            
         }
     }
 }
@@ -231,8 +239,9 @@ int main(void)
 
     // Start off with room for 5 connections
     // (We'll realloc as necessary)
-    Reactor *reactor = Singleton<Reactor>::Instance(new Reactor())->get_data();
-
+    Singleton<Reactor> *sing = Singleton<Reactor>::Instance();
+    Reactor *reactor = sing->get_data();
+    
     // Set up and get a listening socket
     listener = get_listener_socket();
 
@@ -272,10 +281,10 @@ int main(void)
                 {
                     reactor->funcs.at(i)(reactor->fds.at(i).fd);
                 }
-            }
-            else
-            {
-                reactor->funcs.at(i)(reactor->fds.at(i).fd);
+                else
+                {
+                    reactor->funcs.at(i)(reactor->fds.at(i).fd);
+                }
             } // END handle data from client
         }     // END got ready-to-read from poll()
     }         // END looping through file descriptors

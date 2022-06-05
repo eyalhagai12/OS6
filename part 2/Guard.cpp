@@ -19,6 +19,11 @@ public:
     }
 };
 
+/**
+ * it is possible to guard the strtok function 
+ * 
+ */
+
 
 using namespace std;
 

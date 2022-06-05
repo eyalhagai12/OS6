@@ -5,13 +5,13 @@ all: $(BINARYS)
 guard: Guard.o
 	clang++-9 -o $@ $^ -lpthread
 
-singleton: Singleton.o
+singleton: singleton_main.o
 	rm -f test.txt
 	touch test.txt
 	clang++-9 -o $@ $^ -lpthread
 
 reactor: Reactor.o
-	clang++-9 -o $@ $^ -lpthread
+	g++ -o reactor $^ -lpthread
 
 client: client.o
 	clang++-9 -o $@ $^ -lpthread
