@@ -1,4 +1,7 @@
+
 #include <stdio.h>
+#include <pthread.h>
+#pragma once
 
 struct QueueNode
 {
