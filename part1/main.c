@@ -52,7 +52,6 @@ void *switch_letters(void *wordle)
 
 void worst_end_ever(PActive ao)
 {
-    printf("this does nothing\n");
 }
 
 void *per(void *that)

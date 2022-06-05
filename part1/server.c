@@ -70,13 +70,14 @@ void *switch_letters(void *wordle)
 
 void worst_end_ever(PActive ao)
 {
-    printf("this does nothing\n");
 }
 
-void send_to_client(PActive ao){
-     int new_fd = *(int *)pop(ao);
+void send_to_client(PActive ao)
+{
+    int new_fd = *(int *)pop(ao);
     char *buff = (char *)pop(ao);
-    if (send(new_fd, buff, strlen(buff)+1, 0) == -1){
+    if (send(new_fd, buff, strlen(buff) + 1, 0) == -1)
+    {
         perror("send");
     }
 }
@@ -91,7 +92,8 @@ void sigchld_handler(int s)
     // waitpid() might overwrite errno, so we save and restore it:
     int saved_errno = errno;
 
-    while(waitpid(-1, NULL, WNOHANG) > 0);
+    while (waitpid(-1, NULL, WNOHANG) > 0)
+        ;
 
     errno = saved_errno;
 }
@@ -109,7 +111,7 @@ void *get_in_addr(struct sockaddr *sa)
 
 void *handle_client(void *args)
 {
-    char * ref ="closed thread";
+    char *ref = "closed thread";
     int new_fd = *(int *)(args);
     char buff[1024];
     PQueue q1 = createQ();
@@ -122,12 +124,13 @@ void *handle_client(void *args)
 
     ao1->next = ao2;
     ao2->next = ao3;
-    insert_data(ao3,&new_fd);
+    insert_data(ao3, &new_fd);
 
-    if(recv(new_fd,buff,sizeof(buff),0)==-1){
+    if (recv(new_fd, buff, sizeof(buff), 0) == -1)
+    {
         perror("recv");
     }
-    insert_data(ao1,buff);
+    insert_data(ao1, buff);
     activate(&ao1);
 
     // sleep(10);
