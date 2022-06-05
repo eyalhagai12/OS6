@@ -185,7 +185,7 @@ void handle_client(int fd)
             }
             else if (dest_fd == sender_fd)
             {
-                if (send(dest_fd, "message was delivered", 22, 0) == -1)
+                if (send(dest_fd, "message was delivered\n", 23, 0) == -1)
                 {
                     perror("send");
                 }

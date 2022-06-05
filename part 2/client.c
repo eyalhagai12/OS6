@@ -16,7 +16,7 @@
 
 #define PORT "3490" // the port client will be connecting to
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once
+#define MAXDATASIZE 1024 // max number of bytes we can get at once
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> //Header file for sleep(). man 3 sleep for details.
@@ -32,7 +32,8 @@ void *myThreadFun(void *vargp)
     
 	while((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) != -1)
     {
-        printf("%s\n",buf);
+        printf("%s",buf);
+        fflush(stdout);
         bzero(buf,MAXDATASIZE);
     }
     return NULL;
@@ -53,7 +54,7 @@ void *get_in_addr(struct sockaddr *sa)
 int main(int argc, char *argv[])
 {
     int sockfd, numbytes;
-    char buf[MAXDATASIZE];
+    
     struct addrinfo hints, *servinfo, *p;
     int rv;
     char s[INET6_ADDRSTRLEN];
@@ -110,13 +111,17 @@ pthread_t thread_id;
 	pthread_create(&thread_id, NULL, myThreadFun, (void *)&sockfd);
 	// char buf[MAXDATASIZE];  
    while (1)
-   {   scanf("%s",buf);
+   {
+    char *buf=NULL;   
+    size_t len = 0;
+    puts("enter a message to send");
+    getline(&buf, &len, stdin);
     if (send(sockfd, buf, strlen(buf)+1, 0) == -1)
     {
         perror("send");
     }
-    printf("message want sent\n");
-    bzero(buf,MAXDATASIZE);
+    //printf("message want sent\n");
+    free(buf);
    }
 
    
