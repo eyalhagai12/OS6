@@ -3,22 +3,22 @@ BINARYS= guard singleton reactor client
 all: $(BINARYS)
 
 guard: Guard.o
-	clang++-9 -o $@ $^ -lpthread
+	g++ -o $@ $^ -lpthread
 
 singleton: singleton_main.o
 	rm -f test.txt
 	touch test.txt
-	clang++-9 -o $@ $^ -lpthread
+	g++ -o $@ $^ -lpthread
 
 reactor: Reactor.o
 	g++ -o reactor $^ -lpthread
 
 client: client.o
-	clang++-9 -o $@ $^ -lpthread
+	g++ -o $@ $^ -lpthread
 
 
 %.o: %.cpp %(HEADERS)
-	clang++-9 --compile -g $< 
+	g++ --compile -g $< 
 
 clean:
 	rm -f *.o $(BINARYS) *.txt
